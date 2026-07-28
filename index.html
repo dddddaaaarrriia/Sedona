@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圣多纳释放练习 · 双通路循环版</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 24px 16px;
+    background-color: #f4f8f5;
+    color: #3d5446;
+    font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* 顶部 Header */
+  .header {
+    background: linear-gradient(135deg, #e2efe6 0%, #d5e6da 100%);
+    border: 1px solid #c3dbcb;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(46, 64, 54, 0.03);
+  }
+
+  .header h1 {
+    margin: 0 0 6px 0;
+    font-size: 1.5rem;
+    color: #1f382b;
+    font-weight: 500;
+  }
+
+  .header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #52705e;
+  }
+
+  /* 固定目标卡片 */
+  .target-card {
+    background-color: #edf4ef;
+    border-left: 4px solid #8ebd9d;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .target-card label {
+    font-size: 0.85rem;
+    color: #52705e;
+    display: block;
+    font-weight: 600;
+  }
+
+  .target-card .text {
+    font-size: 1.1rem;
+    color: #1f382b;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  /* 通用卡片 */
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid #e1ebe3;
+    box-shadow: 0 4px 20px rgba(46, 64, 54, 0.03);
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    color: #274735;
+    margin-top: 0;
+    margin-bottom: 14px;
+    padding-left: 10px;
+    border-left: 4px solid #8ebd9d;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #52705e;
+    margin: 16px 0 8px 0;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d4e3d7;
+    border-radius: 10px;
+    background-color: #f8faf8;
+    color: #274735;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"]:focus {
+    border-color: #8ebd9d;
+    background-color: #ffffff;
+  }
+
+  /* 标签 Grid */
+  .feeling-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    background-color: #f0f6f2;
+    border: 1px solid #d4e3d7;
+    color: #3d5446;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .tag:hover {
+    background-color: #e2efe6;
+    border-color: #8ebd9d;
+    color: #1f382b;
+  }
+
+  /* 放大版标签（适用于专属独立界面） */
+  .tag-large {
+    padding: 12px 22px;
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  /* 按钮样式 */
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid #c3dbcb;
+    background-color: #ffffff;
+    color: #274735;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    text-align: center;
+    will-change: transform;
+  }
+
+  .btn:hover {
+    background-color: #e2efe6;
+    border-color: #8ebd9d;
+  }
+
+  .btn-primary {
+    background-color: #8ebd9d;
+    color: #ffffff;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: #79ab89;
+  }
+
+  /* 下划线反悔小字链接 */
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: #6b8875;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .back-link:hover {
+    color: #1f382b;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* 🌫️ 硬件加速烟雾消散动画 */
+  @keyframes smokeDissolve {
+    0% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0px);
+    }
+    50% {
+      opacity: 0.5;
+      transform: translate3d(0, -16px, 0) scale(1.02);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(0, -32px, 0) scale(0.94);
+      filter: blur(12px);
+    }
+  }
+
+  .smoke-dissolve {
+    animation: smokeDissolve 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    pointer-events: none;
+  }
+
+  /* 柔和渐显动画 */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <h1>圣多纳释放练习</h1>
+    <p>跟随引导，观察、允许并感受情绪如烟雾般散去。</p>
+  </header>
+
+  <!-- 固定目标展示 -->
+  <div id="target-display" class="target-card hidden">
+    <label>当前释放的目标/困扰：</label>
+    <div id="target-text" class="text"></div>
+  </div>
+
+  <!-- 步骤 1：输入目标 -->
+  <div id="step-target" class="card fade-in">
+    <h2>1. 锁定释放目标</h2>
+    <p>写下你现在想要处理的事情、困扰或执念：</p>
+    <input type="text" id="target-input" placeholder="例如：对即将到来的工作汇报感到焦虑..." autocomplete="off">
+    <button class="btn btn-primary" style="width:100%;" onclick="confirmTarget()">锁定目标</button>
+  </div>
+
+  <!-- 步骤 2：主路径选择界面（首次进入或点反悔链接时呈现） -->
+  <div id="step-feeling-main" class="card hidden">
+    <h2>2. 觉察当下感受</h2>
+    <p>选择最契合你当下状态的觉察路径：</p>
+
+    <div class="section-title">【通路一】直接觉察底层渴望：</div>
+    <div class="feeling-tags">
+      <span class="tag" onclick="selectPath1('想要被认同')">想要被认同</span>
+      <span class="tag" onclick="selectPath1('想要控制')">想要控制</span>
+      <span class="tag" onclick="selectPath1('想要安全')">想要安全</span>
+    </div>
+
+    <div class="section-title">【通路二】从九大情绪深入：</div>
+    <div class="feeling-tags">
+      <span class="tag" onclick="selectPath2('万念俱灰')">万念俱灰</span>
+      <span class="tag" onclick="selectPath2('悲苦')">悲苦</span>
+      <span class="tag" onclick="selectPath2('恐惧')">恐惧</span>
+      <span class="tag" onclick="selectPath2('贪求')">贪求</span>
+      <span class="tag" onclick="selectPath2('愤怒')">愤怒</span>
+      <span class="tag" onclick="selectPath2('自尊自傲')">自尊自傲</span>
+      <span class="tag" onclick="selectPath2('无畏')">无畏</span>
+      <span class="tag" onclick="selectPath2('接纳')">接纳</span>
+      <span class="tag" onclick="selectPath2('平和')">平和</span>
+    </div>
+  </div>
+
+  <!-- 🌟 通路 1 专属界面：仅保留三大想要（字号加大） -->
+  <div id="step-path1-only" class="card hidden">
+    <h2>觉察底层渴望</h2>
+    <p style="font-size:1.05rem; color:#1f382b;">在当下，你感觉最强烈的是哪种想要？</p>
+    <div class="feeling-tags" style="margin-top:16px;">
+      <span class="tag tag-large" onclick="selectPath1('想要被认同')">想要被认同</span>
+      <span class="tag tag-large" onclick="selectPath1('想要控制')">想要控制</span>
+      <span class="tag tag-large" onclick="selectPath1('想要安全')">想要安全</span>
+    </div>
+    <a class="back-link" onclick="goToMainFeeling()">想切换其他觉察路径？</a>
+  </div>
+
+  <!-- 🌟 通路 2 专属界面：仅保留九大情绪（字号加大） -->
+  <div id="step-path2-only" class="card hidden">
+    <h2>觉察当下情绪</h2>
+    <p style="font-size:1.05rem; color:#1f382b;">静心体会，你现在处于哪种情绪状态？</p>
+    <div class="feeling-tags" style="margin-top:16px;">
+      <span class="tag tag-large" onclick="selectPath2('万念俱灰')">万念俱灰</span>
+      <span class="tag tag-large" onclick="selectPath2('悲苦')">悲苦</span>
+      <span class="tag tag-large" onclick="selectPath2('恐惧')">恐惧</span>
+      <span class="tag tag-large" onclick="selectPath2('贪求')">贪求</span>
+      <span class="tag tag-large" onclick="selectPath2('愤怒')">愤怒</span>
+      <span class="tag tag-large" onclick="selectPath2('自尊自傲')">自尊自傲</span>
+      <span class="tag tag-large" onclick="selectPath2('无畏')">无畏</span>
+      <span class="tag tag-large" onclick="selectPath2('接纳')">接纳</span>
+      <span class="tag tag-large" onclick="selectPath2('平和')">平和</span>
+    </div>
+    <a class="back-link" onclick="goToMainFeeling()">想切换其他觉察路径？</a>
+  </div>
+
+  <!-- 通路 2 专属追加步骤：深入底层想要 -->
+  <div id="step-path2-desire" class="card hidden">
+    <h2>深入觉察</h2>
+    <p id="path2-prompt" style="font-size:1.1rem; color:#1f382b; font-weight:500;"></p>
+    <div class="feeling-tags" style="margin-top:16px;">
+      <span class="tag tag-large" onclick="confirmPath2Desire('想要被认同')">想要被认同</span>
+      <span class="tag tag-large" onclick="confirmPath2Desire('想要控制')">想要控制</span>
+      <span class="tag tag-large" onclick="confirmPath2Desire('想要安全')">想要安全</span>
+    </div>
+  </div>
+
+  <!-- 问题 1：能觉察到吗？ -->
+  <div id="step-q1" class="card hidden">
+    <h2>问题 1</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能觉察到这种感觉/想要吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-q1', 'step-q2')">能觉察到</button>
+      <button class="btn" onclick="smokeAndNext('step-q1', 'step-q2')">有些模糊，但我试着体会</button>
+    </div>
+  </div>
+
+  <!-- 问题 2：能放它走吗？ -->
+  <div id="step-q2" class="card hidden">
+    <h2>问题 2</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它走吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="handleQ2Choice()">能（选择放手）</button>
+      <button class="btn" onclick="handleQ2Choice()">试着松开一点</button>
+    </div>
+  </div>
+
+  <!-- 问题 3：什么时候？（仅通路 2 触发） -->
+  <div id="step-q3" class="card hidden">
+    <h2>问题 3</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“什么时候？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-q3', 'step-final')">就现在</button>
+      <button class="btn" onclick="smokeAndNext('step-q3', 'step-final')">给当下一点时间</button>
+    </div>
+  </div>
+
+  <!-- 步骤 6：释放完成 -->
+  <div id="step-final" class="card hidden">
+    <h2>释放完成</h2>
+    <p>感觉已如烟雾般消散。你现在感觉怎么样？</p>
+    <div class="options-grid">
+      <button class="btn btn-primary" onclick="repeatRelease()">针对该目标，继续释放一轮</button>
+      <button class="btn" onclick="resetAll()">清空并重新开始新目标</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentPath = 1;
+  let selectedEmotion = "";
+  let selectedDesire = "";
+
+  // 1. 锁定目标
+  function confirmTarget() {
+    const input = document.getElementById('target-input');
+    if (!input.value.trim()) {
+      alert('请先输入你的目标或困扰。');
+      return;
+    }
+    document.getElementById('target-text').innerText = input.value.trim();
+    document.getElementById('target-display').classList.remove('hidden');
+    transitionCard('step-target', 'step-feeling-main');
+  }
+
+  // 选择通路 1（直达底层）
+  function selectPath1(desireText) {
+    currentPath = 1;
+    selectedDesire = desireText;
+    // 隐藏当前选择页面，直接进入 Q1
+    hideAllCards();
+    document.getElementById('target-display').classList.remove('hidden');
+    const q1 = document.getElementById('step-q1');
+    q1.classList.remove('hidden');
+    q1.classList.add('fade-in');
+  }
+
+  // 选择通路 2（情绪深入）
+  function selectPath2(emotionText) {
+    currentPath = 2;
+    selectedEmotion = emotionText;
+    document.getElementById('path2-prompt').innerText = `在“${selectedEmotion}”的背后，你觉得最核心的渴望是？`;
+    
+    hideAllCards();
+    document.getElementById('target-display').classList.remove('hidden');
+    const path2Desire = document.getElementById('step-path2-desire');
+    path2Desire.classList.remove('hidden');
+    path2Desire.classList.add('fade-in');
+  }
+
+  // 通路 2：选完三大想要后进入 Q1
+  function confirmPath2Desire(desireText) {
+    selectedDesire = desireText;
+    transitionCard('step-path2-desire', 'step-q1');
+  }
+
+  // 问题 2 分支流转
+  function handleQ2Choice() {
+    if (currentPath === 1) {
+      smokeAndNext('step-q2', 'step-final');
+    } else {
+      smokeAndNext('step-q2', 'step-q3');
+    }
+  }
+
+  // 针对该目标继续释放一轮：精准根据通路回到专属卡片
+  function repeatRelease() {
+    hideAllCards();
+    document.getElementById('target-display').classList.remove('hidden');
+
+    if (currentPath === 1) {
+      // 通路 1 回到专属三大想要界面
+      const path1Card = document.getElementById('step-path1-only');
+      path1Card.classList.remove('hidden');
+      path1Card.classList.add('fade-in');
+    } else {
+      // 通路 2 回到专属九大情绪界面
+      const path2Card = document.getElementById('step-path2-only');
+      path2Card.classList.remove('hidden');
+      path2Card.classList.add('fade-in');
+    }
+  }
+
+  // 点击下划线小字，反悔重选主路径
+  function goToMainFeeling() {
+    hideAllCards();
+    document.getElementById('target-display').classList.remove('hidden');
+    const mainFeeling = document.getElementById('step-feeling-main');
+    mainFeeling.classList.remove('hidden');
+    mainFeeling.classList.add('fade-in');
+  }
+
+  // 高性能烟雾消散
+  function smokeAndNext(currentId, nextId) {
+    const currentCard = document.getElementById(currentId);
+    const nextCard = document.getElementById(nextId);
+
+    currentCard.classList.add('smoke-dissolve');
+
+    setTimeout(() => {
+      currentCard.classList.add('hidden');
+      currentCard.classList.remove('smoke-dissolve');
+
+      nextCard.classList.remove('hidden');
+      nextCard.classList.add('fade-in');
+    }, 800);
+  }
+
+  function transitionCard(fromId, toId) {
+    document.getElementById(fromId).classList.add('hidden');
+    const toCard = document.getElementById(toId);
+    toCard.classList.remove('hidden');
+    toCard.classList.add('fade-in');
+  }
+
+  function hideAllCards() {
+    ['step-target', 'step-feeling-main', 'step-path1-only', 'step-path2-only', 'step-path2-desire', 'step-q1', 'step-q2', 'step-q3', 'step-final'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+  }
+
+  // 清空并重新开始新目标
+  function resetAll() {
+    currentPath = 1;
+    selectedEmotion = "";
+    selectedDesire = "";
+
+    document.getElementById('target-input').value = '';
+    document.getElementById('target-display').classList.add('hidden');
+    
+    hideAllCards();
+    
+    const targetCard = document.getElementById('step-target');
+    targetCard.classList.remove('hidden');
+    targetCard.classList.add('fade-in');
+  }
+</script>
+
+</body>
+</html>

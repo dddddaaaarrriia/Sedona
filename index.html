@@ -160,7 +160,7 @@
     color: #1f382b;
   }
 
-  /* 🌿 针对独立界面的【大尺寸选择框】专属优化样式 */
+  /* 🌿 针对独立界面的【大尺寸选择框】专属样式 */
   .card-loop-mode {
     border: 1.5px solid #a1ceb0;
     padding: 28px 24px;
@@ -290,7 +290,7 @@
     <p>跟随引导，观察、允许并感受情绪如烟雾般散去。</p>
   </header>
 
-  <!-- 🌿 统计功能文案 -->
+  <!-- 🌿 统计展示栏 -->
   <div class="stat-bar">
     今天共释放 <span id="release-count" class="count-num">0</span> 次，仅仅通过释放获得自由
   </div>
@@ -317,7 +317,7 @@
     <!-- 通路 1 入口 -->
     <div class="section-title">【通路一】直接觉察底层渴望：</div>
     <div class="feeling-tags">
-      <span class="tag" onclick="selectPath1('想要被认同')">想要被认同</span>
+      <span class="tag" onclick="selectPath1('想要认同')">想要认同</span>
       <span class="tag" onclick="selectPath1('想要控制')">想要控制</span>
       <span class="tag" onclick="selectPath1('想要安全')">想要安全</span>
     </div>
@@ -337,12 +337,12 @@
     </div>
   </div>
 
-  <!-- 🌿 循环步骤：纯通路 1 独立界面（使用加大版选择框风格） -->
+  <!-- 🌿 循环步骤：纯通路 1 独立界面 -->
   <div id="step-path1-only" class="card card-loop-mode hidden">
     <h2>觉察底层渴望</h2>
     <p>在这个当下，你最核心的渴望是？</p>
     <div class="feeling-tags-large">
-      <span class="tag" onclick="selectPath1('想要被认同')">想要被认同</span>
+      <span class="tag" onclick="selectPath1('想要认同')">想要认同</span>
       <span class="tag" onclick="selectPath1('想要控制')">想要控制</span>
       <span class="tag" onclick="selectPath1('想要安全')">想要安全</span>
     </div>
@@ -351,7 +351,7 @@
     </div>
   </div>
 
-  <!-- 🌿 循环步骤：纯通路 2 独立界面（使用加大版选择框风格） -->
+  <!-- 🌿 循环步骤：纯通路 2 独立界面 -->
   <div id="step-path2-only" class="card card-loop-mode hidden">
     <h2>觉察九大情绪</h2>
     <p>选择你此刻最明显的感受：</p>
@@ -371,46 +371,63 @@
     </div>
   </div>
 
-  <!-- 通路 2 专属追加步骤：深入底层想要 -->
-  <div id="step-path2-desire" class="card hidden">
-    <h2>深入觉察</h2>
-    <p id="path2-prompt" style="font-size:1.05rem; color:#1f382b; font-weight:500;">
-      在你感受到的情绪背后，你真正渴望的是什么？
-    </p>
-    <div class="feeling-tags" style="margin-top:16px;">
-      <span class="tag" onclick="confirmPath2Desire('想要被认同')">想要被认同</span>
-      <span class="tag" onclick="confirmPath2Desire('想要控制')">想要控制</span>
-      <span class="tag" onclick="confirmPath2Desire('想要安全')">想要安全</span>
-    </div>
-  </div>
-
-  <!-- 问题 1：能觉察到吗？（双通路通用） -->
-  <div id="step-q1" class="card hidden">
+  <!-- ================= 通路 1 提问流程 ================= -->
+  <div id="step-p1-q1" class="card hidden">
     <h2>问题 1</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能觉察到这种感觉/想要吗？”</p>
+    <p id="p1-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能觉察到这种想要吗？”</p>
     <div class="options-grid">
-      <button class="btn" onclick="smokeAndNext('step-q1', 'step-q2')">能觉察到</button>
-      <button class="btn" onclick="smokeAndNext('step-q1', 'step-q2')">有些模糊，但我试着体会</button>
+      <button class="btn" onclick="smokeAndNext('step-p1-q1', 'step-p1-q2')">能觉察到</button>
+      <button class="btn" onclick="smokeAndNext('step-p1-q1', 'step-p1-q2')">有些模糊，但我试着体会</button>
     </div>
   </div>
 
-  <!-- 问题 2：能放它走吗？（双通路通用） -->
-  <div id="step-q2" class="card hidden">
+  <div id="step-p1-q2" class="card hidden">
     <h2>问题 2</h2>
     <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它走吗？”</p>
     <div class="options-grid">
-      <button class="btn" onclick="handleQ2Choice('yes')">能（选择放手）</button>
-      <button class="btn" onclick="handleQ2Choice('try')">试着松开一点</button>
+      <button class="btn" onclick="finishRelease('step-p1-q2')">能（选择放手）</button>
+      <button class="btn" onclick="finishRelease('step-p1-q2')">试着松开一点</button>
     </div>
   </div>
 
-  <!-- 问题 3：什么时候？（仅通路 2 触发） -->
-  <div id="step-q3" class="card hidden">
+  <!-- ================= 通路 2 专属情绪释放 4 问句 ================= -->
+  <!-- 问题 1：能允许它存在吗 -->
+  <div id="step-p2-q1" class="card hidden">
+    <h2>问题 1</h2>
+    <p id="p2-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能允许这种感觉存在吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-p2-q1', 'step-p2-q2')">能允许</button>
+      <button class="btn" onclick="smokeAndNext('step-p2-q1', 'step-p2-q2')">试着允许</button>
+    </div>
+  </div>
+
+  <!-- 问题 2：能放它离开吗 -->
+  <div id="step-p2-q2" class="card hidden">
+    <h2>问题 2</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它离开吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">能</button>
+      <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">试着放开</button>
+    </div>
+  </div>
+
+  <!-- 问题 3：愿意吗 -->
+  <div id="step-p2-q3" class="card hidden">
     <h2>问题 3</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你愿意让它离开吗吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">愿意</button>
+      <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">我尽力</button>
+    </div>
+  </div>
+
+  <!-- 问题 4：什么时候 -->
+  <div id="step-p2-q4" class="card hidden">
+    <h2>问题 4</h2>
     <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“什么时候？”</p>
     <div class="options-grid">
-      <button class="btn" onclick="finishRelease()">就现在</button>
-      <button class="btn" onclick="finishRelease()">给当下一点时间</button>
+      <button class="btn" onclick="finishRelease('step-p2-q4')">就现在</button>
+      <button class="btn" onclick="finishRelease('step-p2-q4')">给自己一点时间</button>
     </div>
   </div>
 
@@ -471,42 +488,27 @@
     transitionCard('step-target', 'step-feeling');
   }
 
-  // 选择【通路 1】
+  // 选择【通路 1】：三大想要 -> P1 Q1
   function selectPath1(desireText) {
     currentPath = 1;
     selectedDesire = desireText;
+    document.getElementById('p1-q1-text').innerText = `“你能觉察到【${desireText}】的想要吗？”`;
     hideAllStepCards();
-    showCard('step-q1');
+    showCard('step-p1-q1');
   }
 
-  // 选择【通路 2】
+  // 选择【通路 2】：九大情绪 -> 直接接情绪释放4问句 (P2 Q1)
   function selectPath2(emotionText) {
     currentPath = 2;
     selectedEmotion = emotionText;
-    document.getElementById('path2-prompt').innerText = `在“${selectedEmotion}”的背后，你觉得最核心的渴望是？`;
+    document.getElementById('p2-q1-text').innerText = `“你能允许【${selectedEmotion}】这种感觉存在吗？”`;
     hideAllStepCards();
-    showCard('step-path2-desire');
-  }
-
-  // 通路 2：选完三大想要后，进入问题 1
-  function confirmPath2Desire(desireText) {
-    selectedDesire = desireText;
-    transitionCard('step-path2-desire', 'step-q1');
-  }
-
-  // 问题 2 选项分支判断
-  function handleQ2Choice(choice) {
-    if (currentPath === 1) {
-      finishRelease();
-    } else {
-      smokeAndNext('step-q2', 'step-q3');
-    }
+    showCard('step-p2-q1');
   }
 
   // 完成本轮释放
-  function finishRelease() {
+  function finishRelease(currentCardId) {
     incrementCount();
-    const currentCardId = (currentPath === 1) ? 'step-q2' : 'step-q3';
     smokeAndNext(currentCardId, 'step-final');
   }
 
@@ -520,15 +522,21 @@
     }
   }
 
-  // 隐藏切换按钮：随时回完整双通路选单
+  // 随时返回完整双通路选单
   function switchPathMenu() {
     hideAllStepCards();
     showCard('step-feeling');
   }
 
-  // 工具：隐藏流程卡片
+  // 工具：隐藏所有流程卡片
   function hideAllStepCards() {
-    const cards = ['step-target', 'step-feeling', 'step-path1-only', 'step-path2-only', 'step-path2-desire', 'step-q1', 'step-q2', 'step-q3', 'step-final'];
+    const cards = [
+      'step-target', 'step-feeling', 
+      'step-path1-only', 'step-path2-only', 
+      'step-p1-q1', 'step-p1-q2', 
+      'step-p2-q1', 'step-p2-q2', 'step-p2-q3', 'step-p2-q4', 
+      'step-final'
+    ];
     cards.forEach(id => document.getElementById(id).classList.add('hidden'));
   }
 

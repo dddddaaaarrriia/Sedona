@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>圣多纳释放练习 · 双通路版</title>
+<title>圣多纳释放练习 · 目标确认与释放双通路</title>
 <style>
   *, *::before, *::after {
     box-sizing: border-box;
@@ -66,13 +66,21 @@
     margin: 0 2px;
   }
 
-  /* 固定目标卡片 */
+  /* 固定目标卡片（含修改按钮布局） */
   .target-card {
     background-color: #edf4ef;
     border-left: 4px solid #8ebd9d;
     padding: 16px 20px;
     border-radius: 12px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .target-card-info {
+    flex: 1;
+    padding-right: 12px;
   }
 
   .target-card label {
@@ -87,6 +95,24 @@
     color: #1f382b;
     font-weight: 500;
     margin-top: 4px;
+  }
+
+  .btn-edit-target {
+    background-color: #ffffff;
+    border: 1px solid #c3dbcb;
+    color: #52705e;
+    font-size: 0.82rem;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+
+  .btn-edit-target:hover {
+    background-color: #e2efe6;
+    color: #1f382b;
+    border-color: #8ebd9d;
   }
 
   /* 通用卡片 */
@@ -160,7 +186,7 @@
     color: #1f382b;
   }
 
-  /* 🌿 针对独立界面的【大尺寸选择框】专属样式 */
+  /* 🌿 独立界面【大尺寸选择框】专属样式 */
   .card-loop-mode {
     border: 1.5px solid #a1ceb0;
     padding: 28px 24px;
@@ -295,10 +321,13 @@
     今天共释放 <span id="release-count" class="count-num">0</span> 次，仅仅通过释放获得自由
   </div>
 
-  <!-- 固定目标展示 -->
+  <!-- 固定目标展示（含修改按钮） -->
   <div id="target-display" class="target-card hidden">
-    <label>当前释放的目标/困扰：</label>
-    <div id="target-text" class="text"></div>
+    <div class="target-card-info">
+      <label>当前释放的目标/困扰：</label>
+      <div id="target-text" class="text"></div>
+    </div>
+    <button id="edit-target-btn" class="btn-edit-target" onclick="editTarget()">修改</button>
   </div>
 
   <!-- 步骤 1：输入目标 -->
@@ -309,15 +338,15 @@
     <button class="btn btn-primary" style="width:100%;" onclick="confirmTarget()">锁定目标</button>
   </div>
 
-  <!-- 步骤 2：选择觉察通路（首次选择入口） -->
+  <!-- 步骤 2：选择觉察通路（预选状态，可修改目标） -->
   <div id="step-feeling" class="card hidden">
     <h2>2. 觉察当下感受</h2>
-    <p>选择最契合你当下状态的觉察路径：</p>
+    <p>选择最契合你当下状态的觉察路径（选择后将正式锁定目标）：</p>
 
     <!-- 通路 1 入口 -->
     <div class="section-title">【通路一】直接觉察底层渴望：</div>
     <div class="feeling-tags">
-      <span class="tag" onclick="selectPath1('想要认同')">想要认同</span>
+      <span class="tag" onclick="selectPath1('想要被认同')">想要被认同</span>
       <span class="tag" onclick="selectPath1('想要控制')">想要控制</span>
       <span class="tag" onclick="selectPath1('想要安全')">想要安全</span>
     </div>
@@ -342,7 +371,7 @@
     <h2>觉察底层渴望</h2>
     <p>在这个当下，你最核心的渴望是？</p>
     <div class="feeling-tags-large">
-      <span class="tag" onclick="selectPath1('想要认同')">想要认同</span>
+      <span class="tag" onclick="selectPath1('想要被认同')">想要被认同</span>
       <span class="tag" onclick="selectPath1('想要控制')">想要控制</span>
       <span class="tag" onclick="selectPath1('想要安全')">想要安全</span>
     </div>
@@ -390,8 +419,26 @@
     </div>
   </div>
 
+  <!-- 深化觉察 2 问（问题 A & 问题 B） -->
+  <div id="step-p1-deep-q1" class="card hidden">
+    <h2>深化觉察（问题 A）</h2>
+    <p id="p1-deep-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能对此更有觉察吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="smokeAndNext('step-p1-deep-q1', 'step-p1-deep-q2')">能</button>
+      <button class="btn" onclick="smokeAndNext('step-p1-deep-q1', 'step-p1-deep-q2')">需要尽量</button>
+    </div>
+  </div>
+
+  <div id="step-p1-deep-q2" class="card hidden">
+    <h2>再次放手（问题 B）</h2>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它走吗？”</p>
+    <div class="options-grid">
+      <button class="btn" onclick="finishDeepRelease('step-p1-deep-q2')">能</button>
+      <button class="btn" onclick="finishDeepRelease('step-p1-deep-q2')">等一下</button>
+    </div>
+  </div>
+
   <!-- ================= 通路 2 专属情绪释放 4 问句 ================= -->
-  <!-- 问题 1：能允许它存在吗 -->
   <div id="step-p2-q1" class="card hidden">
     <h2>问题 1</h2>
     <p id="p2-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能允许这种感觉存在吗？”</p>
@@ -401,50 +448,87 @@
     </div>
   </div>
 
-  <!-- 问题 2：能放它离开吗 -->
   <div id="step-p2-q2" class="card hidden">
     <h2>问题 2</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它离开吗？”</p>
+    <p id="p2-q2-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它离开吗？”</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">能</button>
       <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">试着放开</button>
     </div>
   </div>
 
-  <!-- 问题 3：愿意吗 -->
   <div id="step-p2-q3" class="card hidden">
     <h2>问题 3</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你愿意让它离开吗吗？”</p>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你愿意吗？”</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">愿意</button>
       <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">我尽力</button>
     </div>
   </div>
 
-  <!-- 问题 4：什么时候 -->
   <div id="step-p2-q4" class="card hidden">
     <h2>问题 4</h2>
     <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“什么时候？”</p>
     <div class="options-grid">
       <button class="btn" onclick="finishRelease('step-p2-q4')">就现在</button>
-      <button class="btn" onclick="finishRelease('step-p2-q4')">给自己一点时间</button>
+      <button class="btn" onclick="finishRelease('step-p2-q4')">给当下一点时间</button>
     </div>
   </div>
 
-  <!-- 步骤 6：释放完成 -->
+  <!-- 步骤 6：释放完成卡片 -->
   <div id="step-final" class="card hidden">
     <h2>释放完成</h2>
-    <p>感觉已如烟雾般消散。你现在感觉怎么样？</p>
-    <div class="options-grid">
-      <button class="btn btn-primary" onclick="repeatRelease()">针对该目标，继续释放一轮</button>
-      <button class="btn" onclick="resetAll()">清空并重新开始新目标</button>
+    
+    <!-- 🌟 通路 1 动态问询区 -->
+    <div id="final-path1-content" class="hidden">
+      <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">还有剩余的【<span id="p1-current-desire-name">想要</span>】需要继续释放吗？</p>
+      <div class="options-grid">
+        <button class="btn btn-primary" onclick="smokeAndNext('step-final', 'step-p1-deep-q1')">有，继续释放</button>
+        <button class="btn" onclick="handleP1NoMoreDesire()">没有了</button>
+      </div>
+    </div>
+
+    <div id="final-path1-feedback" class="hidden">
+      <p style="font-size:1.15rem; color:#274735; font-weight:600; margin-bottom:12px;">✨ 很好，感觉更轻松了！</p>
+      <p style="font-size:1rem; color:#3d5446;">在这个当下，还有其他底层想要（如：想要控制、想要被认同、想要安全）浮现出来吗？</p>
+      <div class="options-grid" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="goToPath1Select()">有，继续梳理</button>
+        <button class="btn" onclick="showFinalPeace()">没有，享受现在的平和</button>
+      </div>
+    </div>
+
+    <!-- 🌟 通路 2 动态问询区 -->
+    <div id="final-path2-content" class="hidden">
+      <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">还有剩余的【<span id="p2-current-emotion-name">情绪</span>】感觉需要继续释放吗？</p>
+      <div class="options-grid">
+        <button class="btn btn-primary" onclick="smokeAndNext('step-final', 'step-p2-q2')">有，继续释放</button>
+        <button class="btn" onclick="handleP2NoMoreEmotion()">没有了</button>
+      </div>
+    </div>
+
+    <div id="final-path2-feedback" class="hidden">
+      <p style="font-size:1.15rem; color:#274735; font-weight:600; margin-bottom:12px;">✨ 太棒了，情绪已如烟雾散去！</p>
+      <p style="font-size:1rem; color:#3d5446;">在这个当下，还有其他情绪（九大情绪）浮现出来吗？</p>
+      <div class="options-grid" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="goToPath2Select()">有，释放其他情绪</button>
+        <button class="btn" onclick="showFinalPeace()">没有，享受现在的平和</button>
+      </div>
+    </div>
+
+    <!-- 🌟 通用最终平和卡片 -->
+    <div id="final-peace-card" class="hidden">
+      <p style="font-size:1.15rem; color:#274735; font-weight:600;">🍃 充分安住于这份当下的清静与自由之中。</p>
+      <div class="options-grid" style="margin-top:20px;">
+        <button class="btn btn-primary" onclick="repeatRelease()">针对该目标，重新梳理</button>
+        <button class="btn" onclick="resetAll()">清空并重新开始新目标</button>
+      </div>
     </div>
   </div>
 
 </div>
 
 <script>
-  let currentPath = 1; // 1代表通路1，2代表通路2
+  let currentPath = 1;
   let selectedEmotion = "";
   let selectedDesire = "";
   let todayCount = 0;
@@ -476,7 +560,7 @@
     document.getElementById('release-count').innerText = todayCount;
   }
 
-  // 1. 锁定目标
+  // 1. 锁定目标（预选阶段，显示修改按钮）
   function confirmTarget() {
     const input = document.getElementById('target-input');
     if (!input.value.trim()) {
@@ -484,24 +568,47 @@
       return;
     }
     document.getElementById('target-text').innerText = input.value.trim();
+    
+    // 显示目标卡片并允许修改
     document.getElementById('target-display').classList.remove('hidden');
+    document.getElementById('edit-target-btn').classList.remove('hidden');
+    
     transitionCard('step-target', 'step-feeling');
   }
 
-  // 选择【通路 1】：三大想要 -> P1 Q1
+  // 修改目标（返回输入界面）
+  function editTarget() {
+    hideAllStepCards();
+    showCard('step-target');
+  }
+
+  // 正式锁死目标（隐去修改按钮）
+  function lockTargetPermanently() {
+    document.getElementById('edit-target-btn').classList.add('hidden');
+  }
+
+  // 选择【通路 1】：四大想要 -> 正式确认释放
   function selectPath1(desireText) {
+    lockTargetPermanently(); // 🔒 正式确认后不可以修改
     currentPath = 1;
     selectedDesire = desireText;
     document.getElementById('p1-q1-text').innerText = `“你能觉察到【${desireText}】的想要吗？”`;
+    document.getElementById('p1-current-desire-name').innerText = desireText;
+    document.getElementById('p1-deep-q1-text').innerText = `“你能对此【${desireText}】更有觉察吗？”`;
+    
     hideAllStepCards();
     showCard('step-p1-q1');
   }
 
-  // 选择【通路 2】：九大情绪 -> 直接接情绪释放4问句 (P2 Q1)
+  // 选择【通路 2】：九大情绪 -> 正式确认释放
   function selectPath2(emotionText) {
+    lockTargetPermanently(); // 🔒 正式确认后不可以修改
     currentPath = 2;
     selectedEmotion = emotionText;
     document.getElementById('p2-q1-text').innerText = `“你能允许【${selectedEmotion}】这种感觉存在吗？”`;
+    document.getElementById('p2-q2-text').innerText = `“你能放【${selectedEmotion}】离开吗？”`;
+    document.getElementById('p2-current-emotion-name').innerText = emotionText;
+    
     hideAllStepCards();
     showCard('step-p2-q1');
   }
@@ -509,7 +616,66 @@
   // 完成本轮释放
   function finishRelease(currentCardId) {
     incrementCount();
+    hideFinalSubDivs();
+
+    if (currentPath === 1) {
+      document.getElementById('final-path1-content').classList.remove('hidden');
+    } else {
+      document.getElementById('final-path2-content').classList.remove('hidden');
+    }
+
     smokeAndNext(currentCardId, 'step-final');
+  }
+
+  // 深化释放 2 问后，计次数并返回询问是否有剩余想要
+  function finishDeepRelease(currentCardId) {
+    incrementCount();
+    hideFinalSubDivs();
+    document.getElementById('final-path1-content').classList.remove('hidden');
+    
+    smokeAndNext(currentCardId, 'step-final');
+  }
+
+  // --- 通路 1 选【没有了】后逻辑 ---
+  function handleP1NoMoreDesire() {
+    hideFinalSubDivs();
+    const feedbackDiv = document.getElementById('final-path1-feedback');
+    feedbackDiv.classList.remove('hidden');
+    feedbackDiv.classList.add('fade-in');
+  }
+
+  function goToPath1Select() {
+    hideAllStepCards();
+    showCard('step-path1-only');
+  }
+
+  // --- 通路 2 选【没有了】后逻辑 ---
+  function handleP2NoMoreEmotion() {
+    hideFinalSubDivs();
+    const feedbackDiv = document.getElementById('final-path2-feedback');
+    feedbackDiv.classList.remove('hidden');
+    feedbackDiv.classList.add('fade-in');
+  }
+
+  function goToPath2Select() {
+    hideAllStepCards();
+    showCard('step-path2-only');
+  }
+
+  // --- 通用：展示最终平和界面 ---
+  function showFinalPeace() {
+    hideFinalSubDivs();
+    const peaceDiv = document.getElementById('final-peace-card');
+    peaceDiv.classList.remove('hidden');
+    peaceDiv.classList.add('fade-in');
+  }
+
+  function hideFinalSubDivs() {
+    document.getElementById('final-path1-content').classList.add('hidden');
+    document.getElementById('final-path1-feedback').classList.add('hidden');
+    document.getElementById('final-path2-content').classList.add('hidden');
+    document.getElementById('final-path2-feedback').classList.add('hidden');
+    document.getElementById('final-peace-card').classList.add('hidden');
   }
 
   // 针对该目标重复释放
@@ -533,7 +699,7 @@
     const cards = [
       'step-target', 'step-feeling', 
       'step-path1-only', 'step-path2-only', 
-      'step-p1-q1', 'step-p1-q2', 
+      'step-p1-q1', 'step-p1-q2', 'step-p1-deep-q1', 'step-p1-deep-q2',
       'step-p2-q1', 'step-p2-q2', 'step-p2-q3', 'step-p2-q4', 
       'step-final'
     ];
@@ -575,6 +741,7 @@
 
     document.getElementById('target-input').value = '';
     document.getElementById('target-display').classList.add('hidden');
+    document.getElementById('edit-target-btn').classList.remove('hidden');
     
     hideAllStepCards();
     showCard('step-target');

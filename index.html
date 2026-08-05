@@ -143,7 +143,7 @@
     margin: 16px 0 8px 0;
   }
 
-  /* 输入框与历史按钮组合框 */
+  /* 📜 输入框与历史按钮组合框 */
   .input-wrapper {
     position: relative;
     margin-bottom: 16px;
@@ -165,21 +165,19 @@
     background-color: #ffffff;
   }
 
-  /* SVG 矢量图标按钮 */
+  /* 📜 隐形图标按钮 */
   .history-toggle-btn {
     position: absolute;
-    right: 8px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
+    font-size: 1.25rem;
     cursor: pointer;
-    padding: 6px;
+    padding: 4px 6px;
     border-radius: 6px;
-    opacity: 0.75;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    opacity: 0.6;
     transition: opacity 0.2s ease, background-color 0.2s ease;
     user-select: none;
   }
@@ -189,17 +187,7 @@
     background-color: #e2efe6;
   }
 
-  .history-toggle-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: #52705e;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* 历史目标抽屉下拉框 */
+  /* 📜 历史目标抽屉下拉框 */
   .history-drawer {
     background: #ffffff;
     border: 1px solid #c3dbcb;
@@ -215,19 +203,6 @@
     padding: 4px 16px 8px 16px;
     border-bottom: 1px solid #edf4ef;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .history-drawer-header svg {
-    width: 15px;
-    height: 15px;
-    stroke: #79ab89;
-    stroke-width: 2;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
   }
 
   .history-item {
@@ -448,30 +423,14 @@
     <h2>1. 锁定释放目标</h2>
     <p>写下你现在想要处理的事情、困扰或执念：</p>
     
-    <!-- 带 文档矢量图标 的输入框 -->
+    <!-- 带 📜 图标的输入框 -->
     <div class="input-wrapper">
       <input type="text" id="target-input" placeholder="例如：对即将到来的工作汇报感到焦虑..." autocomplete="off">
-      <button class="history-toggle-btn" title="选择历史目标" onclick="toggleHistoryDrawer(event)">
-        <!-- 对应图片的文档矢量 SVG 图标 -->
-        <svg viewBox="0 0 24 24">
-          <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 19 8" />
-          <line x1="9" y1="13" x2="15" y2="13" />
-          <line x1="9" y1="17" x2="15" y2="17" />
-        </svg>
-      </button>
+      <button class="history-toggle-btn" title="选择历史目标" onclick="toggleHistoryDrawer(event)">📜</button>
       
-      <!-- 历史抽屉/下拉框 -->
+      <!-- 📜 历史抽屉/下拉框 -->
       <div id="history-drawer" class="history-drawer hidden">
-        <div class="history-drawer-header">
-          <svg viewBox="0 0 24 24">
-            <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 19 8" />
-            <line x1="9" y1="13" x2="15" y2="13" />
-            <line x1="9" y1="17" x2="15" y2="17" />
-          </svg>
-          历史释放目标（最近3条）：
-        </div>
+        <div class="history-drawer-header">历史释放目标（最近3条）：</div>
         <div id="history-list"></div>
       </div>
     </div>
@@ -682,7 +641,7 @@
     document.addEventListener('click', (e) => {
       const drawer = document.getElementById('history-drawer');
       const toggleBtn = document.querySelector('.history-toggle-btn');
-      if (!drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+      if (!drawer.contains(e.target) && e.target !== toggleBtn) {
         drawer.classList.add('hidden');
       }
     });

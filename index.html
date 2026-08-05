@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>圣多纳释放练习 · 目标确认与释放双通路</title>
+<title>圣多纳释放练习 · 历史目标与双通路版</title>
 <style>
   *, *::before, *::after {
     box-sizing: border-box;
@@ -143,21 +143,134 @@
     margin: 16px 0 8px 0;
   }
 
+  /* 输入框与历史按钮组合框 */
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
   input[type="text"] {
     width: 100%;
-    padding: 12px 16px;
+    padding: 12px 48px 12px 16px; /* 右侧留出图标空间 */
     border: 1px solid #d4e3d7;
     border-radius: 10px;
     background-color: #f8faf8;
     color: #274735;
     font-size: 1rem;
     outline: none;
-    margin-bottom: 16px;
   }
 
   input[type="text"]:focus {
     border-color: #8ebd9d;
     background-color: #ffffff;
+  }
+
+  /* SVG 矢量图标按钮 */
+  .history-toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    user-select: none;
+  }
+
+  .history-toggle-btn:hover {
+    opacity: 1;
+    background-color: #e2efe6;
+  }
+
+  .history-toggle-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #52705e;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* 历史目标抽屉下拉框 */
+  .history-drawer {
+    background: #ffffff;
+    border: 1px solid #c3dbcb;
+    border-radius: 12px;
+    padding: 8px 0;
+    margin-top: 8px;
+    box-shadow: 0 6px 20px rgba(31, 56, 43, 0.08);
+  }
+
+  .history-drawer-header {
+    font-size: 0.78rem;
+    color: #79ab89;
+    padding: 4px 16px 8px 16px;
+    border-bottom: 1px solid #edf4ef;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .history-drawer-header svg {
+    width: 15px;
+    height: 15px;
+    stroke: #79ab89;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    font-size: 0.92rem;
+    color: #274735;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .history-item:hover {
+    background-color: #f0f6f2;
+  }
+
+  .history-item-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 12px;
+  }
+
+  .history-item-del {
+    color: #a0b3a6;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .history-item-del:hover {
+    color: #d9534f;
+    background-color: #fbeae8;
+  }
+
+  .history-empty-tip {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: #8fa897;
+    text-align: center;
   }
 
   /* 基础标签 Grid */
@@ -334,7 +447,35 @@
   <div id="step-target" class="card fade-in">
     <h2>1. 锁定释放目标</h2>
     <p>写下你现在想要处理的事情、困扰或执念：</p>
-    <input type="text" id="target-input" placeholder="例如：对即将到来的工作汇报感到焦虑..." autocomplete="off">
+    
+    <!-- 带 文档矢量图标 的输入框 -->
+    <div class="input-wrapper">
+      <input type="text" id="target-input" placeholder="例如：对即将到来的工作汇报感到焦虑..." autocomplete="off">
+      <button class="history-toggle-btn" title="选择历史目标" onclick="toggleHistoryDrawer(event)">
+        <!-- 对应图片的文档矢量 SVG 图标 -->
+        <svg viewBox="0 0 24 24">
+          <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 19 8" />
+          <line x1="9" y1="13" x2="15" y2="13" />
+          <line x1="9" y1="17" x2="15" y2="17" />
+        </svg>
+      </button>
+      
+      <!-- 历史抽屉/下拉框 -->
+      <div id="history-drawer" class="history-drawer hidden">
+        <div class="history-drawer-header">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 19 8" />
+            <line x1="9" y1="13" x2="15" y2="13" />
+            <line x1="9" y1="17" x2="15" y2="17" />
+          </svg>
+          历史释放目标（最近3条）：
+        </div>
+        <div id="history-list"></div>
+      </div>
+    </div>
+
     <button class="btn btn-primary" style="width:100%;" onclick="confirmTarget()">锁定目标</button>
   </div>
 
@@ -535,8 +676,83 @@
 
   window.addEventListener('DOMContentLoaded', () => {
     initCountData();
+    renderHistoryList();
+
+    // 点击页面其他区域自动收起历史抽屉
+    document.addEventListener('click', (e) => {
+      const drawer = document.getElementById('history-drawer');
+      const toggleBtn = document.querySelector('.history-toggle-btn');
+      if (!drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+        drawer.classList.add('hidden');
+      }
+    });
   });
 
+  /* ================= 📜 历史目标管理逻辑 ================= */
+  function getHistoryTargets() {
+    const saved = localStorage.getItem('v5_history_targets');
+    return saved ? JSON.parse(saved) : [];
+  }
+
+  function saveHistoryTarget(target) {
+    if (!target) return;
+    let list = getHistoryTargets();
+    // 过滤掉重复项目，将最新目标置顶
+    list = list.filter(item => item !== target);
+    list.unshift(target);
+    // 只保留最近 3 条
+    if (list.length > 3) {
+      list = list.slice(0, 3);
+    }
+    localStorage.setItem('v5_history_targets', JSON.stringify(list));
+    renderHistoryList();
+  }
+
+  function deleteHistoryTarget(index, event) {
+    event.stopPropagation(); // 阻止点击删除触发填入事件
+    let list = getHistoryTargets();
+    list.splice(index, 1);
+    localStorage.setItem('v5_history_targets', JSON.stringify(list));
+    renderHistoryList();
+  }
+
+  function renderHistoryList() {
+    const list = getHistoryTargets();
+    const container = document.getElementById('history-list');
+    
+    if (list.length === 0) {
+      container.innerHTML = `<div class="history-empty-tip">暂无历史目标记录</div>`;
+      return;
+    }
+
+    let html = '';
+    list.forEach((item, index) => {
+      html += `
+        <div class="history-item" onclick="selectHistoryTarget('${escapeHtml(item)}')">
+          <span class="history-item-text" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
+          <span class="history-item-del" onclick="deleteHistoryTarget(${index}, event)" title="删除">×</span>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function toggleHistoryDrawer(event) {
+    event.stopPropagation();
+    const drawer = document.getElementById('history-drawer');
+    drawer.classList.toggle('hidden');
+  }
+
+  function selectHistoryTarget(text) {
+    document.getElementById('target-input').value = text;
+    document.getElementById('history-drawer').classList.add('hidden');
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+  }
+
+  /* ================= 🌿 计数逻辑 ================= */
   function initCountData() {
     const todayStr = new Date().toISOString().split('T')[0];
     const savedDate = localStorage.getItem('v4_release_date');
@@ -560,14 +776,20 @@
     document.getElementById('release-count').innerText = todayCount;
   }
 
-  // 1. 锁定目标（预选阶段，显示修改按钮）
+  /* ================= 🎯 目标与流程控制 ================= */
+  // 1. 锁定目标（预选阶段，显示修改按钮 & 保存历史）
   function confirmTarget() {
     const input = document.getElementById('target-input');
-    if (!input.value.trim()) {
+    const targetValue = input.value.trim();
+    if (!targetValue) {
       alert('请先输入你的目标或困扰。');
       return;
     }
-    document.getElementById('target-text').innerText = input.value.trim();
+
+    // 保存到历史记录
+    saveHistoryTarget(targetValue);
+
+    document.getElementById('target-text').innerText = targetValue;
     
     // 显示目标卡片并允许修改
     document.getElementById('target-display').classList.remove('hidden');
@@ -589,7 +811,7 @@
 
   // 选择【通路 1】：四大想要 -> 正式确认释放
   function selectPath1(desireText) {
-    lockTargetPermanently(); // 🔒 正式确认后不可以修改
+    lockTargetPermanently();
     currentPath = 1;
     selectedDesire = desireText;
     document.getElementById('p1-q1-text').innerText = `“你能觉察到【${desireText}】的想要吗？”`;
@@ -602,7 +824,7 @@
 
   // 选择【通路 2】：九大情绪 -> 正式确认释放
   function selectPath2(emotionText) {
-    lockTargetPermanently(); // 🔒 正式确认后不可以修改
+    lockTargetPermanently();
     currentPath = 2;
     selectedEmotion = emotionText;
     document.getElementById('p2-q1-text').innerText = `“你能允许【${selectedEmotion}】这种感觉存在吗？”`;

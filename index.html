@@ -50,7 +50,9 @@
 
   /* 🌿 统计展示栏 */
   .stat-bar {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.92rem;
     color: #52705e;
     margin-bottom: 20px;
@@ -64,6 +66,26 @@
     font-weight: 700;
     color: #1f382b;
     margin: 0 2px;
+  }
+
+  /* 📝 释放笔记入口按钮 */
+  .notes-entry-btn {
+    background-color: #ffffff;
+    border: 1px solid #c3dbcb;
+    color: #52705e;
+    font-size: 0.82rem;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .notes-entry-btn:hover {
+    background-color: #e2efe6;
+    color: #1f382b;
+    border-color: #8ebd9d;
   }
 
   /* 固定目标卡片（含修改按钮布局） */
@@ -393,6 +415,193 @@
   .fade-in {
     animation: fadeIn 0.4s ease-out forwards;
   }
+
+  /* ================= 📝 释放笔记全屏覆盖层 ================= */
+  .notes-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f8f5;
+    z-index: 9999;
+    overflow-y: auto;
+    display: none;
+  }
+
+  .notes-overlay.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .notes-overlay-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .notes-header {
+    background: linear-gradient(135deg, #e2efe6 0%, #d5e6da 100%);
+    border: 1px solid #c3dbcb;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(46, 64, 54, 0.03);
+  }
+
+  .notes-header h2 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    font-size: 1.3rem;
+    color: #1f382b;
+    font-weight: 500;
+  }
+
+  .notes-close-btn {
+    background-color: #ffffff;
+    border: 1px solid #c3dbcb;
+    color: #52705e;
+    font-size: 0.85rem;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .notes-close-btn:hover {
+    background-color: #e2efe6;
+    color: #1f382b;
+    border-color: #8ebd9d;
+  }
+
+  .notes-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid #e1ebe3;
+    box-shadow: 0 4px 20px rgba(46, 64, 54, 0.03);
+  }
+
+  .notes-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 16px;
+    border: 1px solid #d4e3d7;
+    border-radius: 10px;
+    background-color: #f8faf8;
+    color: #274735;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.8;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .notes-textarea:focus {
+    border-color: #8ebd9d;
+    background-color: #ffffff;
+  }
+
+  .notes-textarea::placeholder {
+    color: #a0b3a6;
+  }
+
+  .notes-save-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    background-color: #8ebd9d;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    text-align: center;
+  }
+
+  .notes-save-btn:hover {
+    background-color: #79ab89;
+  }
+
+  .notes-list-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #79ab89;
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .note-item {
+    background: #f8faf8;
+    border: 1px solid #e1ebe3;
+    border-left: 4px solid #8ebd9d;
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    transition: border-color 0.15s ease;
+  }
+
+  .note-item:hover {
+    border-left-color: #79ab89;
+  }
+
+  .note-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .note-item-date {
+    font-size: 0.78rem;
+    color: #79ab89;
+    font-weight: 600;
+  }
+
+  .note-item-del {
+    color: #a0b3a6;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .note-item-del:hover {
+    color: #d9534f;
+    background-color: #fbeae8;
+  }
+
+  .note-item-content {
+    font-size: 0.95rem;
+    color: #274735;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+  }
+
+  .notes-empty-tip {
+    padding: 24px 16px;
+    font-size: 0.9rem;
+    color: #8fa897;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -406,7 +615,8 @@
 
   <!-- 🌿 统计展示栏 -->
   <div class="stat-bar">
-    今天共释放 <span id="release-count" class="count-num">0</span> 次，仅仅通过释放获得自由
+    <span>今天共释放 <span id="release-count" class="count-num">0</span> 次，仅仅通过释放获得自由</span>
+    <button class="notes-entry-btn" onclick="openNotesOverlay()">📝 释放笔记</button>
   </div>
 
   <!-- 固定目标展示（含修改按钮） -->
@@ -430,7 +640,7 @@
       
       <!-- 📜 历史抽屉/下拉框 -->
       <div id="history-drawer" class="history-drawer hidden">
-        <div class="history-drawer-header">历史释放目标（最近3条）：</div>
+        <div class="history-drawer-header">历史释放目标（最近10条）：</div>
         <div id="history-list"></div>
       </div>
     </div>
@@ -503,7 +713,7 @@
   <!-- ================= 通路 1 提问流程 ================= -->
   <div id="step-p1-q1" class="card hidden">
     <h2>问题 1</h2>
-    <p id="p1-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能觉察到这种想要吗？”</p>
+    <p id="p1-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能觉察到这种想要吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p1-q1', 'step-p1-q2')">能觉察到</button>
       <button class="btn" onclick="smokeAndNext('step-p1-q1', 'step-p1-q2')">有些模糊，但我试着体会</button>
@@ -512,7 +722,7 @@
 
   <div id="step-p1-q2" class="card hidden">
     <h2>问题 2</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它走吗？”</p>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能放它走吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="finishRelease('step-p1-q2')">能（选择放手）</button>
       <button class="btn" onclick="finishRelease('step-p1-q2')">试着松开一点</button>
@@ -522,7 +732,7 @@
   <!-- 深化觉察 2 问（问题 A & 问题 B） -->
   <div id="step-p1-deep-q1" class="card hidden">
     <h2>深化觉察（问题 A）</h2>
-    <p id="p1-deep-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能对此更有觉察吗？”</p>
+    <p id="p1-deep-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能对此更有觉察吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p1-deep-q1', 'step-p1-deep-q2')">能</button>
       <button class="btn" onclick="smokeAndNext('step-p1-deep-q1', 'step-p1-deep-q2')">需要尽量</button>
@@ -531,7 +741,7 @@
 
   <div id="step-p1-deep-q2" class="card hidden">
     <h2>再次放手（问题 B）</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它走吗？”</p>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能放它走吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="finishDeepRelease('step-p1-deep-q2')">能</button>
       <button class="btn" onclick="finishDeepRelease('step-p1-deep-q2')">等一下</button>
@@ -541,7 +751,7 @@
   <!-- ================= 通路 2 专属情绪释放 4 问句 ================= -->
   <div id="step-p2-q1" class="card hidden">
     <h2>问题 1</h2>
-    <p id="p2-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能允许这种感觉存在吗？”</p>
+    <p id="p2-q1-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能允许这种感觉存在吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p2-q1', 'step-p2-q2')">能允许</button>
       <button class="btn" onclick="smokeAndNext('step-p2-q1', 'step-p2-q2')">试着允许</button>
@@ -550,7 +760,7 @@
 
   <div id="step-p2-q2" class="card hidden">
     <h2>问题 2</h2>
-    <p id="p2-q2-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你能放它离开吗？”</p>
+    <p id="p2-q2-text" style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你能放它离开吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">能</button>
       <button class="btn" onclick="smokeAndNext('step-p2-q2', 'step-p2-q3')">试着放开</button>
@@ -559,7 +769,7 @@
 
   <div id="step-p2-q3" class="card hidden">
     <h2>问题 3</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“你愿意吗？”</p>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">"你愿意吗？"</p>
     <div class="options-grid">
       <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">愿意</button>
       <button class="btn" onclick="smokeAndNext('step-p2-q3', 'step-p2-q4')">我尽力</button>
@@ -568,7 +778,7 @@
 
   <div id="step-p2-q4" class="card hidden">
     <h2>问题 4</h2>
-    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">“什么时候？”</p>
+    <p style="font-size:1.1rem; color:#1f382b; font-weight:500;">"什么时候？"</p>
     <div class="options-grid">
       <button class="btn" onclick="finishRelease('step-p2-q4')">就现在</button>
       <button class="btn" onclick="finishRelease('step-p2-q4')">给当下一点时间</button>
@@ -627,6 +837,31 @@
 
 </div>
 
+<!-- ================= 📝 释放笔记全屏覆盖层 ================= -->
+<div id="notes-overlay" class="notes-overlay">
+  <div class="notes-overlay-container">
+
+    <div class="notes-header">
+      <h2>📝 释放笔记</h2>
+      <button class="notes-close-btn" onclick="closeNotesOverlay()">返回练习</button>
+    </div>
+
+    <!-- 写笔记区域 -->
+    <div class="notes-card">
+      <div class="section-title">记录此刻的释放心得：</div>
+      <textarea id="notes-textarea" class="notes-textarea" placeholder="写下你在释放过程中的感受、觉察、变化..." autocomplete="off"></textarea>
+      <button class="notes-save-btn" onclick="saveNote()">保存笔记</button>
+    </div>
+
+    <!-- 历史笔记列表 -->
+    <div class="notes-card">
+      <div class="notes-list-header">历史笔记</div>
+      <div id="notes-list" class="notes-list"></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
   let currentPath = 1;
   let selectedEmotion = "";
@@ -636,6 +871,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     initCountData();
     renderHistoryList();
+    renderNotesList();
 
     // 点击页面其他区域自动收起历史抽屉
     document.addEventListener('click', (e) => {
@@ -659,9 +895,9 @@
     // 过滤掉重复项目，将最新目标置顶
     list = list.filter(item => item !== target);
     list.unshift(target);
-    // 只保留最近 3 条
-    if (list.length > 3) {
-      list = list.slice(0, 3);
+    // 只保留最近 10 条
+    if (list.length > 10) {
+      list = list.slice(0, 10);
     }
     localStorage.setItem('v5_history_targets', JSON.stringify(list));
     renderHistoryList();
@@ -773,9 +1009,9 @@
     lockTargetPermanently();
     currentPath = 1;
     selectedDesire = desireText;
-    document.getElementById('p1-q1-text').innerText = `“你能觉察到【${desireText}】的想要吗？”`;
+    document.getElementById('p1-q1-text').innerText = `"你能觉察到【${desireText}】的想要吗？"`;
     document.getElementById('p1-current-desire-name').innerText = desireText;
-    document.getElementById('p1-deep-q1-text').innerText = `“你能对此【${desireText}】更有觉察吗？”`;
+    document.getElementById('p1-deep-q1-text').innerText = `"你能对此【${desireText}】更有觉察吗？"`;
     
     hideAllStepCards();
     showCard('step-p1-q1');
@@ -786,8 +1022,8 @@
     lockTargetPermanently();
     currentPath = 2;
     selectedEmotion = emotionText;
-    document.getElementById('p2-q1-text').innerText = `“你能允许【${selectedEmotion}】这种感觉存在吗？”`;
-    document.getElementById('p2-q2-text').innerText = `“你能放【${selectedEmotion}】离开吗？”`;
+    document.getElementById('p2-q1-text').innerText = `"你能允许【${selectedEmotion}】这种感觉存在吗？"`;
+    document.getElementById('p2-q2-text').innerText = `"你能放【${selectedEmotion}】离开吗？"`;
     document.getElementById('p2-current-emotion-name').innerText = emotionText;
     
     hideAllStepCards();
@@ -926,6 +1162,87 @@
     
     hideAllStepCards();
     showCard('step-target');
+  }
+
+  /* ================= 📝 释放笔记管理逻辑 ================= */
+  function getNotes() {
+    const saved = localStorage.getItem('v7_release_notes');
+    return saved ? JSON.parse(saved) : [];
+  }
+
+  function saveNote() {
+    const textarea = document.getElementById('notes-textarea');
+    const content = textarea.value.trim();
+    if (!content) {
+      alert('请先写一些内容再保存。');
+      return;
+    }
+
+    const now = new Date();
+    const note = {
+      id: Date.now(),
+      date: now.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      content: content
+    };
+
+    let list = getNotes();
+    list.unshift(note);
+    localStorage.setItem('v7_release_notes', JSON.stringify(list));
+
+    textarea.value = '';
+    renderNotesList();
+  }
+
+  function deleteNote(id, event) {
+    event.stopPropagation();
+    let list = getNotes();
+    list = list.filter(note => note.id !== id);
+    localStorage.setItem('v7_release_notes', JSON.stringify(list));
+    renderNotesList();
+  }
+
+  function renderNotesList() {
+    const list = getNotes();
+    const container = document.getElementById('notes-list');
+
+    if (list.length === 0) {
+      container.innerHTML = `<div class="notes-empty-tip">还没有笔记，释放后可以来这里记录心得</div>`;
+      return;
+    }
+
+    let html = '';
+    list.forEach((note) => {
+      const safeContent = note.content
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+      html += `
+        <div class="note-item">
+          <div class="note-item-header">
+            <span class="note-item-date">${note.date}</span>
+            <span class="note-item-del" onclick="deleteNote(${note.id}, event)" title="删除">×</span>
+          </div>
+          <div class="note-item-content">${safeContent}</div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function openNotesOverlay() {
+    document.getElementById('notes-overlay').classList.add('active');
+    renderNotesList();
+  }
+
+  function closeNotesOverlay() {
+    document.getElementById('notes-overlay').classList.remove('active');
   }
 </script>
 
